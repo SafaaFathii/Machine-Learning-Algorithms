@@ -1,0 +1,94 @@
+import math
+import numpy as np
+dict = {1: 1, 2: 3,4: 3,3: 2,5: 5}
+B1 = 0
+B0 = 0
+meanX = 0
+meanY = 0
+#Calc Mean(X)
+sum = 0
+for X in dict:
+    sum+=X
+meanX = sum/len(dict)
+#print("Mean X = " + str(meanX))
+#Calc Mean(Y)
+sum = 0
+for X,Y in dict.items():
+    sum += Y
+meanY = sum / len(dict)
+#print("Mean Y = " + str(meanY))
+#Estimating the Slope B1
+def calcSlopeB1():
+
+# X - Mean(X)
+    XMinMean = []
+    for X in dict:
+        XMinMean.append(X - meanX)
+    #print(XMinMean)
+
+# Y - Mean(Y)
+    YMinMean = []
+    for X,Y in dict.items():
+        YMinMean.append(Y-meanY)
+    #print(YMinMean)
+#sum(X - Mean(X) * Y - Mean(Y))
+    multi = []
+    for X , Y in zip(XMinMean,YMinMean):
+        multi.append(X*Y)
+    #print(multi)
+    NumeratorSum = 0
+    for i in multi:
+        NumeratorSum+=i
+    #print(NumeratorSum)
+    #--------------------------------------------------------
+    XMinMeanSquared = []
+    for i in XMinMean:
+        XMinMeanSquared.append(math.pow(i,2))
+    #print(XMinMeanSquared)
+    DenominatorSum=0
+    for j in XMinMeanSquared:
+        DenominatorSum+=j
+    #print(DenominatorSum)
+    #---------------------------------------------------------
+    B1 = NumeratorSum/DenominatorSum
+    #print("B1 = " + str(B1))
+    return B1
+#Estimating the Intercept B0
+def calcInterceptB0():
+    B0 = meanY - B1 * meanX
+    #print("B0 = " + str(B0))
+    return B0
+#Making Predictions
+def MakingPrediction(B0 , B1):
+    PredictDict = {}
+    for X in dict:
+        P = B0 + B1 * X
+        PredictDict[X] = P
+    return PredictDict
+
+#Estimating Error RMSE (Root Mean Squared Error)
+def EstimatingError():
+    # Calculate the RMSE
+    # the sum of P - Y
+    YsList = []
+    for X, Y in dict.items():
+        YsList.append(Y)
+    PsList = []
+    for X, Y in PredictDict.items():
+        PsList.append(Y)
+    res = list(np.array(PsList) - np.array(YsList))
+    # print(res)
+    sum = 0
+    for i in res:
+        i = math.pow(i, 2)
+        sum += i
+    RMSE = math.sqrt(sum / 5)
+    print("-----------------------------------------------------------")
+    print("RMSE =" + str(RMSE))
+
+
+B1 = calcSlopeB1()
+B0 = calcInterceptB0()
+PredictDict = MakingPrediction(B0 , B1)
+Error = EstimatingError()
+
