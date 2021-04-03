@@ -1,3 +1,5 @@
+import numpy as np
+import math
 dict = {1: 1, 2: 3, 4: 3, 3: 2, 5: 5}
 
 def calcPrediction(B0 , B1 , X):
@@ -15,18 +17,47 @@ def updateB0 (B0old , alpha , error):
 def updateB1 (B1old , alpha , error , X):
     B1New = B1old - alpha * error * X
     return B1New
-#------------------------------------------------------------------------------------------
+
+#iteration 1
 B0 = 0
 B1 = 0
 alpha  = 0.01
 for i in range(1,5):
     print("Epoch:" + str(i))
     for X,Y in dict.items():
-        P = calcPrediction(0 ,0 ,X)
+        P = calcPrediction(B0 ,B1 ,X)
+        #print(P)
         E = calcError(P , Y)
+        #print(E)
         #update
         newB0 = updateB0(B0 , 0.01 , E)
         newB1 = updateB1(B1, 0.01, E,X)
         B0 = newB0
         B1 = newB1
         print("Bo = "+str(newB0)+" B1 = "+str(newB1))
+
+#with the final coefficient values calculate the predictions
+predicDict = {}
+for X in dict:
+    Y = calcPrediction(B0 ,B1 ,X)
+    predicDict[X] = Y
+
+#print(predicDict)
+
+#Calculate the RMSE
+#the sum of P - Y
+YsList = []
+for X,Y in dict.items():
+    YsList.append(Y)
+PsList = []
+for X,Y in predicDict.items():
+    PsList.append(Y)
+res = list(np.array(PsList) - np.array(YsList))
+#print(res)
+sum =0
+for i in res:
+    i = math.pow(i,2)
+    sum+=i
+RMSE = math.sqrt(sum/5)
+print("-----------------------------------------------------------")
+print("RMSE ="+ str(RMSE))
