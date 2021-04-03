@@ -1,0 +1,32 @@
+dict = {1: 1, 2: 3, 4: 3, 3: 2, 5: 5}
+
+def calcPrediction(B0 , B1 , X):
+     P = B0 + B1*X
+     return P
+
+def calcError(P , Y):
+    error = P - Y
+    return error
+
+def updateB0 (B0old , alpha , error):
+    B0New = B0old - alpha * error
+    return B0New
+
+def updateB1 (B1old , alpha , error , X):
+    B1New = B1old - alpha * error * X
+    return B1New
+#------------------------------------------------------------------------------------------
+B0 = 0
+B1 = 0
+alpha  = 0.01
+for i in range(1,5):
+    print("Epoch:" + str(i))
+    for X,Y in dict.items():
+        P = calcPrediction(0 ,0 ,X)
+        E = calcError(P , Y)
+        #update
+        newB0 = updateB0(B0 , 0.01 , E)
+        newB1 = updateB1(B1, 0.01, E,X)
+        B0 = newB0
+        B1 = newB1
+        print("Bo = "+str(newB0)+" B1 = "+str(newB1))
