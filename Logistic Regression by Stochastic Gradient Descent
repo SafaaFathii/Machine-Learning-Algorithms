@@ -1,0 +1,58 @@
+import numpy as np
+import math
+dataset = [(2.7810836,2.550537003,0),
+           (1.465489372,2.362125076,0),
+           (3.396561688,4.400293529,0),
+           (1.38807019,1.850220317,0),
+           (3.06407232,3.005305973,0),
+           (7.627531214,2.759262235,1),
+           (5.332441248,2.088626775,1),
+           (6.922596716,1.77106367,1),
+           (8.675418651,-0.242068655,1),
+           (7.673756466,3.508563011,1)]
+output = 0
+prediction = 0
+
+
+def calcOutput(B0,B1,B2,X1,X2):
+    output = B0 + B1 * X1 + B2 * X2
+    return output
+
+
+def calcPrediction(output):
+    prediction = 1/(1 + math.exp(-output))
+    return prediction
+
+
+def calcBs(prediction, oldB , alpha ,y , X):
+    newB = oldB + alpha * (y - prediction) * prediction * (1 - prediction) * X
+    return newB
+
+B0 = 0
+B1 = 0
+B2 = 0
+alpha = 0.3
+for j in range(10):
+    for i in dataset:
+        output = calcOutput(B0,B1,B2,i[0],i[1])
+        prediction = calcPrediction(output)
+        B0 = calcBs(prediction, B0, alpha, i[2], 1)
+        B1 = calcBs(prediction, B1, alpha, i[2], i[0])
+        B2 = calcBs(prediction, B2, alpha, i[2], i[1])
+# print("After 10 Epochs: ")
+# print("B0 = " + str(B0))
+# print("B1 = " + str(B1))
+# print("B2 = " + str(B2))
+
+newdataset = []
+for i in dataset:
+    output = calcOutput(B0,B1,B2,i[0],i[1])
+    prediction = calcPrediction(output)
+    newdataset.append((i[0],i[1],prediction,round(prediction)))
+
+for i in newdataset:
+    print(i)
+
+
+
+
